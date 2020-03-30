@@ -11,11 +11,11 @@ jobs:
       script:
         - docker build -t ${DOCKER_USERNAME}/${DOCKER_REPO}:latest .
         - docker tag ${DOCKER_USERNAME}/${DOCKER_REPO}:latest ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_COMMIT}
-        - docker tag ${DOCKER_USERNAME}/${DOCKER_REPO}:latest ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}__${TRAVIS_COMMIT}__${TRAVIS_JOB_NUMBER} 
+        - docker tag ${DOCKER_USERNAME}/${DOCKER_REPO}:latest ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}__${TRAVIS_COMMIT}__${TRAVIS_BUILD_NUMBER} 
         - docker tag ${DOCKER_USERNAME}/${DOCKER_REPO}:latest ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}
         - echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         - docker push ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_COMMIT}
-        - docker push ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}__${TRAVIS_COMMIT}__${TRAVIS_JOB_NUMBER}
+        - docker push ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}__${TRAVIS_COMMIT}__${TRAVIS_BUILD_NUMBER}
         - docker push ${DOCKER_USERNAME}/${DOCKER_REPO}:${TRAVIS_BRANCH}
         - docker push ${DOCKER_USERNAME}/${DOCKER_REPO}:latest
     - stage: smoke test
