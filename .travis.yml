@@ -1,7 +1,9 @@
-language: java
+language: minimal
 
 services:
   - docker
+
+if: branch = f-assignment
 
 jobs:
   include:
