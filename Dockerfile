@@ -11,18 +11,18 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/a
     rm apache-maven-$MAVEN_VERSION-bin.tar.gz && \
     mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
 
-COPY ./pom.xml /app/
 COPY ./mvnw /app/
-COPY ./src /app/src
 COPY ./.mvn /app/.mvn
 
+COPY ./pom.xml /app/
+
+COPY ./src /app/src
+
 WORKDIR /app
-run ls -la
 RUN /bin/bash ./mvnw package
 
 FROM openjdk:8-jdk-alpine3.9
 COPY --from=build_env /app/target /app
 
 WORKDIR /app
-RUN ls -la
 CMD [ "java", "-jar", "*.jar"]
