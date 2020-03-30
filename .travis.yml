@@ -3,15 +3,25 @@ language: java
 services:
   - docker
 
-script:
-  - docker build -t $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_COMMIT -t $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH__$TRAVIS_COMMIT__$TRAVIS_JOB_NUMBER -t $DOCKER_USERNAME/$DOCKER_REPO:latest .
-
-deploy:
-  provider: script
-  script:
-    - echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_COMMIT
-    - docker push $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH__$TRAVIS_COMMIT__$TRAVIS_JOB_NUMBE
-    - docker push $DOCKER_USERNAME/$DOCKER_REPO:latest
-  on:
-    branch: f-assignment
+jobs:
+  include:
+    - stage: build docker image
+      script:
+        - docker build -t $DOCKER_USERNAME/$DOCKER_REPO:latest .
+    - stage: smoke test
+      script:
+        - echo "placeholder for smoke test"
+    - stage: push docker image
+      before_install:
+        - docker tag $DOCKER_USERNAME/$DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_COMMIT
+        - docker tag $DOCKER_USERNAME/$DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH__$TRAVIS_COMMIT__$TRAVIS_JOB_NUMBER 
+        - docker tag $DOCKER_USERNAME/$DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH
+        - echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      script:
+        - docker push $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_COMMIT
+        - docker push $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH__$TRAVIS_COMMIT__$TRAVIS_JOB_NUMBER
+        - docker push $DOCKER_USERNAME/$DOCKER_REPO:$TRAVIS_BRANCH
+        - docker push $DOCKER_USERNAME/$DOCKER_REPO:latest
+    - stage: deploy
+      script:
+        - echo "placeholder for deploy script"
